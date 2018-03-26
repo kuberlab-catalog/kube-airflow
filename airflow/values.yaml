@@ -28,7 +28,7 @@ airflow:
   image:
     ##
     ## docker-airflow image
-    repository: puckel/docker-airflow
+    repository: kuberlab/airflow
     ##
     ## image tag
     tag: 1.9.0
@@ -246,4 +246,4 @@ redis:
   persistence:
     ##
     ## Use a PVC to persist data
-    enabled: false
+    enabled: true

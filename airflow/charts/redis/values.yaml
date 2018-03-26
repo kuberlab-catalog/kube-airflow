@@ -1,0 +1,4 @@
+persistence:
+  ##
+  ## Use a PVC to persist data
+  enabled: true
