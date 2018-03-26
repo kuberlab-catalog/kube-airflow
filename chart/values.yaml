@@ -7,7 +7,7 @@ postgresql:
     accessMode: ReadWriteOnce
     size: 8Gi
     subPath: "postgresql-db"
-    storageClass: ceph-rbd
+    #storageClass: ceph-rbd
 
 rabbitmq:
   rabbitmqUsername: airflow
@@ -17,7 +17,7 @@ rabbitmq:
     enabled: true
     accessMode: ReadWriteOnce
     size: 8Gi
-    storageClass: ceph-rbd
+    #storageClass: ceph-rbd
 
 airflow:
   worker:

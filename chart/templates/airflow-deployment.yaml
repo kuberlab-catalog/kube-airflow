@@ -19,6 +19,7 @@ spec:
       containers:
       - name: web
         image: {{ .Values.airflow.image }}
+        imagePullPolicy: Always
         env:
         - name: AIRFLOW_HOME
           value: "/usr/local/airflow"
