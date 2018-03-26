@@ -53,7 +53,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: airflow-smtp-password
-        args: ["scheduler", "-n", "5"]
+        args: ["scheduler"]
         volumeMounts:
           {{- if .Values.airflow.dags.dag_share }}
           - mountPath: /usr/local/airflow/dags
