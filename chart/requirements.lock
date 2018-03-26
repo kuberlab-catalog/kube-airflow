@@ -1,0 +1,9 @@
+dependencies:
+- name: rabbitmq
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.6.26
+- name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.8.12
+digest: sha256:63b85ddaeb2e063ddf024ebafc9305db9d89342077ce01e904565a8b60686749
+generated: 2018-03-26T19:41:25.878230889+03:00

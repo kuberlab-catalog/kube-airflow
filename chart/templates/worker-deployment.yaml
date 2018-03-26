@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-worker
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.airflow.worker.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        tier: worker
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: worker
+        image: {{ .Values.airflow.image }}
+        # volumes:
+        #     - /localpath/to/dags:/usr/local/airflow/dags
+        env:
+        - name: AIRFLOW_HOME
+          value: "/usr/local/airflow"
+        - name: POSTGRES_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        - name: POSTGRES_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        - name: RABBITMQ_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: rabbitmq-password
+        - name: AIRFLOW_FERNET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: airflow-fernet-key
+        - name: AIRFLOW_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: airflow-secret-key
+        - name: SMTP_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: airflow-smtp-password
+        args: ["worker"]
+        volumeMounts:
+          {{- if .Values.airflow.dags.dag_share }}
+          - mountPath: /usr/local/airflow/dags
+            name: dag
+            {{- if .Values.airflow.dags.subpath }}
+            subPath: {{ .Values.airflow.dags.subpath }}
+            {{- end }}
+          {{- end }}
+          - mountPath: /usr/local/airflow/confgen
+            name: config
+      volumes:
+      - name: dag
+{{- if .Values.airflow.dags.persistence.enabled }}
+        {{- if .Values.airflow.dags.persistence.fromProvider }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+        {{- else }}
+{{ toYaml .Values.airflow.dags.persistence.volume | indent 8 }}
+        {{- end }}
+{{- else }}
+        emptyDir: {}
+{{- end }}
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
+          items:
+          - key:  airflow-conf.sh
+            path: airflow-conf.sh

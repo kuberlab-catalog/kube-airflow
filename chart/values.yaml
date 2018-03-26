@@ -1,0 +1,69 @@
+postgresql:
+  postgresUser: airflow
+  postgresPassword: airflow
+  postgresDatabase: airflow
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    subPath: "postgresql-db"
+    storageClass: ceph-rbd
+
+rabbitmq:
+  rabbitmqUsername: airflow
+  rabbitmqPassword: airflow
+  rabbitmqVhost: airflow
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 8Gi
+    storageClass: ceph-rbd
+
+airflow:
+  worker:
+    replicas: 1
+  image: kuberlab/airflow:1.9.0
+  dbPollSize: 5
+  dag_concurrency: 16
+  max_active_runs_per_dag: 16
+  #fernet_key: 12
+  base_url: http://localhost:8080
+  secret_key: my_key
+  service_type: ClusterIP
+  dags:
+    persistence:
+      enabled: true
+      fromProvider: true
+      # Must support ReadWriteMany
+      #storageClass: ""
+      size: 8Gi
+      volume:
+        #subpath:
+        nfs:
+          path: /kuberlab
+          server: 192.168.1.55
+  smtp:
+    host: localhost
+    starttls: True
+    ssl: False
+    user: airflow
+    port: 25
+    password:
+    mail_from: airflow@airflow.local
+
+tls_seret:
+  enabled: false
+  #crt:
+  #key:
+
+ingress:
+  annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+  enabled: false
+  tls:
+      # - secretName: gitlab.cluster.local
+      #   hosts:
+      #     - gitlab.cluster.local
+  airflow_url: airflow.cluster.local
+  flower_url: flower.cluster.local

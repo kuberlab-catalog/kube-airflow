@@ -1,0 +1,16 @@
+{{- if .Values.airflow.dags.persistence.enabled }}
+{{- if .Values.airflow.dags.persistence.fromProvider }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  accessModes: [ "ReadWriteMany" ]
+  resources:
+    requests:
+      storage: "{{ .Values.airflow.dags.persistence.size }}"
+  {{- if .Values.airflow.dags.persistence.storageClass }}
+  storageClassName: {{ .Values.airflow.dags.persistence.storageClass }}
+  {{- end }}
+{{- end }}
+{{- end }}

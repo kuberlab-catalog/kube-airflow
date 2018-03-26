@@ -1,0 +1,44 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+#commnt
+spec:
+  rules:
+    - host: {{ .Values.ingress.airflow_url | quote }}
+      http:
+        paths:
+          - path: /
+          backend:
+            serviceName: {{ template "fullname" . }}-web
+            servicePort: 8080
+    - host: {{ .Values.ingress.flower_url | quote }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "fullname" . }}-flower
+              servicePort: 8080
+{{- if .Values.ingress.tls_seret.enabled }}
+  tls:
+    - secretName: {{ template "fullname" . }}-tls
+      hosts:
+        - {{ .Values.ingress.airflow_url | quote }}
+        - {{ .Values.ingress.flower_url | quote }}
+{{- else }}
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

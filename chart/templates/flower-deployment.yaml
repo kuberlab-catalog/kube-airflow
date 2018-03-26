@@ -1,0 +1,89 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-flower
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        tier: flower
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: flower
+        image: {{ .Values.airflow.image }}
+        env:
+        - name: AIRFLOW_HOME
+          value: "/usr/local/airflow"
+        # To prevent the error: ValueError: invalid literal for int() with base 10: 'tcp://10.0.0.83:5555'
+        - name: FLOWER_PORT
+          value: "5555"
+        - name: POSTGRES_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        - name: POSTGRES_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        - name: RABBITMQ_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: rabbitmq-password
+        - name: AIRFLOW_FERNET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: airflow-fernet-key
+        - name: AIRFLOW_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: airflow-secret-key
+        - name: SMTP_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: airflow-smtp-password
+        volumeMounts:
+          {{- if .Values.airflow.dags.dag_share }}
+          - mountPath: /usr/local/airflow/dags
+            name: dag
+            {{- if .Values.airflow.dags.subpath }}
+            subPath: {{ .Values.airflow.dags.subpath }}
+            {{- end }}
+          {{- end }}
+          - mountPath: /usr/local/airflow/confgen
+            name: config
+        ports:
+        - name: flower
+          containerPort: 5555
+        args: ["flower"]
+      volumes:
+      - name: dag
+{{- if .Values.airflow.dags.persistence.enabled }}
+        {{- if .Values.airflow.dags.persistence.fromProvider }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+        {{- else }}
+{{ toYaml .Values.airflow.dags.persistence.volume | indent 8 }}
+        {{- end }}
+{{- else }}
+        emptyDir: {}
+{{- end }}
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
+          items:
+          - key:  airflow-conf.sh
+            path: airflow-conf.sh
