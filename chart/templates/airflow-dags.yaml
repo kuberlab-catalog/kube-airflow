@@ -21,6 +21,8 @@ spec:
       - name: dags
         image: busybox
         imagePullPolicy: Always
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
         env:
         - name: AIRFLOW_HOME
           value: "/usr/local/airflow"
