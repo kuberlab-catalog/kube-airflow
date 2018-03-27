@@ -19,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: dags
-        image: busybox
+        image: ubuntu:latest
         imagePullPolicy: Always
         command: [ "/bin/bash", "-c", "--" ]
         args: [ "while true; do sleep 30; done;" ]
