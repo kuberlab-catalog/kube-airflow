@@ -29,7 +29,7 @@ spec:
             backend:
               serviceName: {{ template "fullname" . }}-flower
               servicePort: 8080
-{{- if .Values.ingress.tls_seret.enabled }}
+{{- if .Values.tls_seret.enabled }}
   tls:
     - secretName: {{ template "fullname" . }}-tls
       hosts:
