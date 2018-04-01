@@ -15,26 +15,26 @@ metadata:
 #commnt
 spec:
   rules:
-    - host: {{ .Values.ingress.airflow_url | quote }}
-      http:
-        paths:
-          - path: /
-          backend:
-            serviceName: {{ template "fullname" . }}-web
-            servicePort: 8080
-    - host: {{ .Values.ingress.flower_url | quote }}
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: {{ template "fullname" . }}-flower
-              servicePort: 8080
+  - host: {{ .Values.ingress.airflow_url | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}-web
+          servicePort: 8080
+  - host: {{ .Values.ingress.flower_url | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}-flower
+          servicePort: 8080
 {{- if .Values.tls_seret.enabled }}
   tls:
-    - secretName: {{ template "fullname" . }}-tls
-      hosts:
-      - {{ .Values.ingress.airflow_url | quote }}
-      - {{ .Values.ingress.flower_url | quote }}
+  - secretName: {{ template "fullname" . }}-tls
+    hosts:
+    - {{ .Values.ingress.airflow_url | quote }}
+    - {{ .Values.ingress.flower_url | quote }}
 {{- else }}
 {{- if .Values.ingress.tls }}
   tls:
