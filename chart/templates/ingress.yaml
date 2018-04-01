@@ -33,8 +33,8 @@ spec:
   tls:
     - secretName: {{ template "fullname" . }}-tls
       hosts:
-        - {{ .Values.ingress.airflow_url | quote }}
-        - {{ .Values.ingress.flower_url | quote }}
+      - {{ .Values.ingress.airflow_url | quote }}
+      - {{ .Values.ingress.flower_url | quote }}
 {{- else }}
 {{- if .Values.ingress.tls }}
   tls:
