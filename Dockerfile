@@ -24,22 +24,18 @@ ENV LC_MESSAGES en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
 RUN buildDeps=' \
-        python3-dev \
         libkrb5-dev \
         libsasl2-dev \
-        libxml2-dev \
-        libssl-dev \
-        libffi-dev \
         build-essential \
         libblas-dev \
         liblapack-dev \
-        libpq-dev \
-        git \
     ' \
     && apt-get update -y \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
         $buildDeps \
+        python3-dev \
+        libffi-dev \
         python3-pip \
         python3-requests \
         apt-utils \
@@ -47,6 +43,10 @@ RUN buildDeps=' \
         rsync \
         netcat \
         locales \
+        git \
+        libssl-dev \
+        libxml2-dev \
+        libpq-dev \
     && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
     && locale-gen \
     && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
@@ -68,6 +68,9 @@ RUN buildDeps=' \
         /usr/share/man \
         /usr/share/doc \
         /usr/share/doc-base
+
+# Install additional packages
+RUN pip install 'git+https://github.com/kuberlab/python-mlboardclient'
 
 COPY script/entrypoint.sh ${AIRFLOW_HOME}/entrypoint.sh
 
