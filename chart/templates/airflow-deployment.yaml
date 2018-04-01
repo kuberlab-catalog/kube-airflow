@@ -57,6 +57,7 @@ spec:
           {{- if .Values.airflow.dags.dag_share }}
           - mountPath: /usr/local/airflow/dags
             name: dag
+            readOnly: true
             {{- if .Values.airflow.dags.subpath }}
             subPath: {{ .Values.airflow.dags.subpath }}
             {{- end }}
