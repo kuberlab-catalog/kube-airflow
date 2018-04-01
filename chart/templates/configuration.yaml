@@ -111,8 +111,12 @@ data:
     expose_config = true
 
     # Set to true to turn on authentication : http://pythonhosted.org/airflow/installation.html#web-authentication
+{{- if .Values.airflow.security.authenticate }}
+    authenticate = True
+    auth_backend = {{ .Values.airflow.security.auth_backend }}
+{{- else }}
     authenticate = False
-
+{{- end }}
     # Filter the list of dags by owner name (requires authentication to be enabled)
     filter_by_owner = False
 

@@ -30,6 +30,9 @@ airflow:
   base_url: http://localhost:8080
   secret_key: my_key
   service_type: ClusterIP
+  security:
+    authenticate: true
+    auth_backend: airflow.contrib.auth.backends.password_auth
   dags:
     persistence:
       enabled: true
