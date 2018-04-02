@@ -55,6 +55,9 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: airflow-smtp-password
+        ports:
+        - name: log
+          containerPort: 8793
         args: ["worker"]
         volumeMounts:
           {{- if .Values.airflow.dags.dag_share }}
