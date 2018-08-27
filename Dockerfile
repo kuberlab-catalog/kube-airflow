@@ -59,7 +59,7 @@ RUN buildDeps=' \
     && pip install --no-cache-dir ndg-httpsclient \
     && pip install --no-cache-dir pyasn1 \
     && pip install --no-cache-dir apache-airflow[crypto,celery,postgres,hive,jdbc]==$AIRFLOW_VERSION \
-    && pip install --no-cache-dir celery[redis]==4.0.2 \
+    && pip install --no-cache-dir celery[redis]==4.1.1 \
     && apt-get purge --auto-remove -y $buildDeps \
     && apt-get clean \
     && rm -rf \
