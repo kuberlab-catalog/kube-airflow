@@ -161,7 +161,7 @@ data:
     broker_url = amqp://{{ .Values.rabbitmq.rabbitmqUsername }}:$RABBITMQ_PWD@{{ template "airflow.rabbitmq.fullname" . }}:5672/{{ .Values.rabbitmq.rabbitmqVhost }}
 
     # Another key Celery setting
-    celery_result_backend = amqp://{{ .Values.rabbitmq.rabbitmqUsername }}:$RABBITMQ_PWD@{{ template "airflow.rabbitmq.fullname" . }}:5672/{{ .Values.rabbitmq.rabbitmqVhost }}
+    celery_result_backend = db+postgresql://{{ .Values.postgresql.postgresUser }}:$POSTGRES_PWD@{{ template "airflow.postgresql.fullname" . }}/{{ .Values.postgresql.postgresDatabase }}
 
     # Celery Flower is a sweet UI for Celery. Airflow has a shortcut to start
     # it airflow flower. This defines the port that Celery Flower runs on
